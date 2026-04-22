@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pair Nexus Bot V1</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.container{width:100%;max-width:420px;background:linear-gradient(145deg,#1a1a1a,#0f0f0f);border-radius:24px;padding:30px;border:1px solid rgba(255,215,0,0.2);box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.bot-pic{width:120px;height:120px;border-radius:50%;margin:0 auto 20px;display:block;border:3px solid #FFD700;box-shadow:0 0 30px rgba(255,215,0,0.5);object-fit:cover}
+h1{text-align:center;font-size:22px;font-weight:700;background:linear-gradient(90deg,#FFD700,#FFF,#FFD700);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shine 3s linear infinite;margin-bottom:5px}
+@keyframes shine{to{background-position:200% center}}
+.sub{text-align:center;font-size:12px;color:#FFD700;opacity:0.8;letter-spacing:2px;margin-bottom:25px}
+label{display:block;font-size:13px;color:#FFD700;margin-bottom:8px;font-weight:600}
+input{width:100%;padding:14px 16px;background:#0a0a0a;border:1px solid rgba(255,215,0,0.3);border-radius:12px;color:#fff;font-size:15px;margin-bottom:20px}
+input:focus{outline:none;border:1px solid #FFD700}
+.btn{width:100%;padding:16px;background:linear-gradient(135deg,#FFD700,#FFA500);color:#0a0a0a;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer}
+.btn:disabled{opacity:0.5}
+.result{margin-top:25px;padding:20px;background:#0a0a0a;border-radius:12px;border:1px solid rgba(255,215,0,0.3);display:none;text-align:center}
+.result.show{display:block}
+.code{display:block;font-size:32px;font-weight:700;color:#FFD700;letter-spacing:8px;margin:15px 0;font-family:monospace}
+.steps{text-align:left;font-size:12px;color:#FFD700;opacity:0.9;margin-top:15px;line-height:1.8}
+.footer{text-align:center;margin-top:25px;font-size:11px;color:#FFD700;opacity:0.6;letter-spacing:3px}
+</style>
+</head>
+<body>
+<div class="container">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUT9Rl3EQSkMkmuPFNlYkRbSATP2IE-yZW_DSZzdyy1w&s=10" class="bot-pic" alt="Nexus Bot">
+    <h1>👑 NEXUS BOT V1 👑</h1>
+    <p class="sub">100 COMMANDS | PAIR SYSTEM</p>
+    
+    <label>📱 Namba ya WhatsApp</label>
+    <input type="tel" id="number" placeholder="255712345678" value="255">
+    
+    <button class="btn" id="btn" onclick="getPairCode()">GENERATE PAIR CODE ✨</button>
+    
+    <div class="result" id="result">
+        <p style="color:#FFD700;font-size:14px;">Pair Code Yako:</p>
+        <span class="code" id="codeText">---- ----</span>
+        <button class="btn" onclick="copyCode()" style="margin-bottom:15px;">📋 Copy Code</button>
+        <div class="steps">
+            <b>Jinsi ya Ku-link:</b><br>
+            1. WhatsApp → Settings → Linked Devices<br>
+            2. Link a device → Link with phone number<br>
+            3. Ingiza code hapo juu<br>
+            4. Bot itawaka! 🔥
+        </div>
+    </div>
+    
+    <div class="footer">BY NEXUS | 100 COMMANDS</div>
+</div>
+<script>
+async function getPairCode() {
+    const btn = document.getElementById('btn');
+    const number = document.getElementById('number').value.trim();
+    if (!number || number.length < 10) return alert('Weka namba sahihi');
+    btn.disabled = true; btn.textContent = 'Inatengeneza...';
+    try {
+        const res = await fetch('/pair', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ number })});
+        const data = await res.json();
+        if (data.code) {
+            document.getElementById('codeText').textContent = data.code;
+            document.getElementById('result').classList.add('show');
+        } else { alert(data.error || data.message); }
+    } catch (e) { alert('Server error'); }
+    btn.disabled = false; btn.textContent = 'GENERATE PAIR CODE ✨';
+}
+function copyCode() {
+    navigator.clipboard.writeText(document.getElementById('codeText').textContent);
+    alert('Code Imecopy! ✅');
+}
+</script>
+</body>
+</html>
